@@ -1,0 +1,2 @@
+* mud-script
+Mud游戏脚本

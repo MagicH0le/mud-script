@@ -1,0 +1,76 @@
+#variable XunShan[META] {
+    {NAME} {华山巡山新手任务}
+    {DESC} {自动化完成华山巡山新手任务}
+    {AUTHOR} {c4droid}
+};
+
+#function {XunShan.Init} {
+    okLog 华山巡山模块初始化中;
+    #return true;
+}
+
+#variable xunshan_paths {n;n;e;sd;sd;sd;nu;nu;nu;w;nd;eu;wd;nu;wu;ed;nd;nd;nu;sd;wd;nd;wd;nd;nw;n;s;se;su;eu;su;eu;su;su;sd;su;s;s};
+
+#class xunshan open;
+
+#action {^岳灵珊对你说道：最近华山颇不安宁，你带着这块令牌去巡逻一下吧。} {
+    #delay 1 {okLog 1秒后开始巡逻};
+    #delay 2 {
+        path.WalkSteps {$xunshan_paths} {#delay 1 xs_submit};
+    };
+}
+
+#action {^你给岳灵珊一块令牌。} {
+    #delay {xs_ask} {xs.on} 1;
+}
+
+#action {^你在%1巡弋，尚未发现敌踪。} {
+    #math xunshan_done[%1] {$xunshan_done[%1] + 1};
+    #delay walk.Resume {path.Walk.Resume} 0.5;
+}
+
+#alias {xs.on} {
+    #variable xunshan_done {};
+    #if { "$gMapRoom[name]" != "客厅" } {
+        errLog 请在客厅待命;
+        #return;
+    };
+    event.Handle {GMCP.Move} {path.Walk} {$MODULE} {walk_time};
+    ask yue lingshan about job;
+}
+
+#alias {xs.off} {
+    event.UnHandle {GMCP.Move} {path.Walk};
+    #undelay {xs_ask};
+    #class xunshan kill;
+}
+
+#alias {xs_submit} {
+    give ling to yue lingshan;
+}
+
+#alias {walk_time} {
+    #if { "$gGMCP[Move][房间名]" == "客厅" } {
+        path.end;
+        #return;
+    };
+    path.Walk.Stop;
+    #if { "$gGMCP[Move][房间名]" == "后山小路" } {
+        #if { $xunshan_done[$gGMCP[Move][房间名]] == 2 } {
+            #delay walk.Resume {path.Walk.Resume} 0.2;
+        };
+    };
+    #elseif { @isTrue{$xunshan_done[$gGMCP[Move][房间名]]} } {
+        #delay walk.Resume {path.Walk.Resume} 0.2;
+    };
+}
+
+#action {^岳灵珊说道：「你刚刚做过任务，先去休息一会吧。」} {
+    dazuo 10;
+    #delay {xs_ask} {xs.on} 5;
+};
+
+#action {^岳灵珊说道：「你的功夫不错了，找我娘看看有什么任务交给你。」} {
+    xs.off;
+    kill-module job/newbie/huashan/xunshan;
+}

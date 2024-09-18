@@ -1,0 +1,47 @@
+#variable ChaoJing[META] {
+    {NAME} {石门寺抄经}
+    {DESC} {石门寺抄经}
+    {AUTHOR} {c4droid}
+};
+
+#variable toShiJingYuPath {out;wd;sw;w;n;n;n;n;ne;e;ne;n;n;nu;nu;nu;eu};
+#variable toShiMenSiPath {wd;sd;sd;sd;s;s;sw;w;sw;s;s;s;s;e;ne;eu;enter};
+
+#class chaojing open;
+
+#function {ChaoJing.Init} {
+    okLog 石门寺抄经模块初始化中;
+    #return true;
+}
+
+#alias {cj.on} {
+    #if { "$gMapRoom[name]" != "石门寺" } {
+        errLog 请在石门寺中待命;
+        #return;
+    };
+    ask yunyou sengren about job;
+}
+
+#alias {cj.off} {
+    #class chaojing kill;
+}
+
+#action {^云游僧人说道：很好，你直接去泰山经石峪抄经} {
+    #delay 5 {
+        path.WalkSteps {$toShiJingYuPath} {#delay 1 cj_start};
+    };
+};
+
+#action {^你默写良久，终于抄完了，看样子可以回去领工钱了。} {
+    #delay 1 {
+        path.WalkSteps {$toShiMenSiPath} {#delay 1 cj_submit};
+    };
+}
+
+#alias {cj_start} {
+    write jing;
+}
+
+#alias {cj_submit} {
+    ask yunyou sengren about done;
+}
