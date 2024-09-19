@@ -24,18 +24,23 @@
 
 #alias {cj.off} {
     #class chaojing kill;
+    #undelay {cj_ask};
 }
 
 #action {^云游僧人说道：很好，你直接去泰山经石峪抄经} {
     #delay 5 {
         path.WalkSteps {$toShiJingYuPath} {#delay 1 cj_start};
     };
-};
+}
 
 #action {^你默写良久，终于抄完了，看样子可以回去领工钱了。} {
     #delay 1 {
         path.WalkSteps {$toShiMenSiPath} {#delay 1 cj_submit};
     };
+}
+
+#action {^云游僧人说道：「很好！我已经吩咐人存了100两银子到您的帐号，欢迎下次再来抄经。」} {
+    #delay {cj_ask} {cj.on} 5;
 }
 
 #alias {cj_start} {
