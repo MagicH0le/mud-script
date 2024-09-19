@@ -42,6 +42,7 @@
 #alias {xs.off} {
     event.UnHandle {GMCP.Move} {path.Walk};
     #undelay {xs_ask};
+    #undelay {xs_fm};
     #class xunshan kill;
 }
 
@@ -68,6 +69,11 @@
 #action {^岳灵珊说道：「你刚刚做过任务，先去休息一会吧。」} {
     dazuo 10;
     #delay {xs_ask} {xs.on} 5;
+};
+
+#action {^这么快就回来了？肯定偷懒了吧？} {
+    dazuo 10;
+    #delay {xs_fm} {xs_submit} 5;
 };
 
 #action {^岳灵珊说道：「你的功夫不错了，找我娘看看有什么任务交给你。」} {
