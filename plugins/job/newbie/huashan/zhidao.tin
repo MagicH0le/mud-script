@@ -1,0 +1,10 @@
+#variable ZhiDao[META] {
+    {NAME} {华山指导弟子新手任务}
+    {DESC} {自动化完成华山指导弟子新手任务}
+    {AUTHOR} {c4droid}
+};
+
+#function {ZhiDao.Init} {
+    okLog 华山指导弟子模块初始化中;
+    #return true;
+}
